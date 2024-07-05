@@ -1,15 +1,16 @@
-import { useEffect, useRef } from 'react';
+import type fabric from 'fabric';
+import React, { useEffect, useRef } from 'react';
 import styles from './index.module.css';
 
-const Home = () => {
-  const canvasRef = useRef(null);
-  const fabricCanvasRef = useRef(null);
+const Home: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
 
   useEffect(() => {
     const loadFabric = async () => {
       const fabric = await import('fabric');
 
-      if (canvasRef.current && !fabricCanvasRef.current) {
+      if (canvasRef.current && fabricCanvasRef.current === null) {
         // Canvasの初期化
         fabricCanvasRef.current = new fabric.Canvas(canvasRef.current);
       }
@@ -19,17 +20,17 @@ const Home = () => {
 
     // クリーンアップ関数
     return () => {
-      if (fabricCanvasRef.current) {
+      if (fabricCanvasRef.current !== null) {
         fabricCanvasRef.current.dispose();
         fabricCanvasRef.current = null;
       }
     };
   }, []);
 
-  const addShapes = () => {
-    const fabric = require('fabric');
+  const addShapes = async () => {
+    const fabric = await import('fabric');
 
-    if (fabricCanvasRef.current) {
+    if (fabricCanvasRef.current !== null) {
       // 正方形の作成と追加
       const square = new fabric.Rect({
         left: 100,
@@ -64,7 +65,7 @@ const Home = () => {
         radius: 50,
         selectable: false, // 操作不可能に設定
         stroke: 'black', // 枠線の色を設定
-        strokeWidth: 10, // 枠線の太さを設定
+        strokeWidth: 2, // 枠線の太さを設定
       });
       fabricCanvasRef.current.add(circle);
 
