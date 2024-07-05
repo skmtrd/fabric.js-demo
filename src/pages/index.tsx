@@ -91,7 +91,7 @@ const Home: React.FC = () => {
   };
 
   const resizeShape = (shapeKey: string, width: number, height: number) => {
-    if (shapes[shapeKey] as fabric.Object) {
+    if (shapes[shapeKey]) {
       shapes[shapeKey].set({ width, height });
       shapes[shapeKey].setCoords();
       fabricCanvasRef.current?.renderAll();
