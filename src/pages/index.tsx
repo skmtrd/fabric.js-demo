@@ -1,10 +1,11 @@
 import type fabric from 'fabric';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './index.module.css';
 
 const Home: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
+  const [shapes, setShapes] = useState<{ [key: string]: fabric.Object }>({});
 
   useEffect(() => {
     const loadFabric = async () => {
@@ -38,9 +39,9 @@ const Home: React.FC = () => {
         fill: 'blue',
         width: 100,
         height: 100,
-        selectable: false, // 操作不可能に設定
-        stroke: 'black', // 枠線の色を設定
-        strokeWidth: 2, // 枠線の太さを設定
+        selectable: true,
+        stroke: 'black',
+        strokeWidth: 2,
       });
       fabricCanvasRef.current.add(square);
 
@@ -51,9 +52,9 @@ const Home: React.FC = () => {
         fill: 'green',
         width: 100,
         height: 100,
-        selectable: false, // 操作不可能に設定
-        stroke: 'black', // 枠線の色を設定
-        strokeWidth: 2, // 枠線の太さを設定
+        selectable: true,
+        stroke: 'black',
+        strokeWidth: 2,
       });
       fabricCanvasRef.current.add(triangle);
 
@@ -63,9 +64,9 @@ const Home: React.FC = () => {
         top: 200,
         fill: 'red',
         radius: 50,
-        selectable: false, // 操作不可能に設定
-        stroke: 'black', // 枠線の色を設定
-        strokeWidth: 2, // 枠線の太さを設定
+        selectable: true,
+        stroke: 'black',
+        strokeWidth: 2,
       });
       fabricCanvasRef.current.add(circle);
 
@@ -80,15 +81,29 @@ const Home: React.FC = () => {
         strokeWidth: 1,
         backgroundColor: 'lightgray',
         borderColor: 'black',
-        editable: false, // 編集不可能に設定
+        editable: false,
       });
       fabricCanvasRef.current.add(textbox);
+
+      // 図形のリファレンスを保存
+      setShapes({ square, triangle, circle, textbox });
+    }
+  };
+
+  const resizeShape = (shapeKey: string, width: number, height: number) => {
+    if (shapes[shapeKey] as fabric.Object) {
+      shapes[shapeKey].set({ width, height });
+      shapes[shapeKey].setCoords();
+      fabricCanvasRef.current?.renderAll();
     }
   };
 
   return (
     <div className={styles.container}>
       <button onClick={addShapes}>図形を追加</button>
+      <button onClick={() => resizeShape('square', 150, 150)}>正方形を大きくする</button>
+      <button onClick={() => resizeShape('triangle', 150, 150)}>三角形を大きくする</button>
+      <button onClick={() => resizeShape('circle', 75, 75)}>円を大きくする</button>
       <canvas ref={canvasRef} width="800" height="600" style={{ border: '1px solid black' }} />
     </div>
   );
