@@ -1,57 +1,94 @@
+import { useEffect, useRef } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
+  const canvasRef = useRef(null);
+  const fabricCanvasRef = useRef(null);
+
+  useEffect(() => {
+    const loadFabric = async () => {
+      const fabric = await import('fabric');
+
+      if (canvasRef.current && !fabricCanvasRef.current) {
+        // Canvasの初期化
+        fabricCanvasRef.current = new fabric.Canvas(canvasRef.current);
+      }
+    };
+
+    loadFabric();
+
+    // クリーンアップ関数
+    return () => {
+      if (fabricCanvasRef.current) {
+        fabricCanvasRef.current.dispose();
+        fabricCanvasRef.current = null;
+      }
+    };
+  }, []);
+
+  const addShapes = () => {
+    const fabric = require('fabric');
+
+    if (fabricCanvasRef.current) {
+      // 正方形の作成と追加
+      const square = new fabric.Rect({
+        left: 100,
+        top: 100,
+        fill: 'blue',
+        width: 100,
+        height: 100,
+        selectable: false, // 操作不可能に設定
+        stroke: 'black', // 枠線の色を設定
+        strokeWidth: 2, // 枠線の太さを設定
+      });
+      fabricCanvasRef.current.add(square);
+
+      // 正三角形の作成と追加
+      const triangle = new fabric.Triangle({
+        left: 300,
+        top: 100,
+        fill: 'green',
+        width: 100,
+        height: 100,
+        selectable: false, // 操作不可能に設定
+        stroke: 'black', // 枠線の色を設定
+        strokeWidth: 2, // 枠線の太さを設定
+      });
+      fabricCanvasRef.current.add(triangle);
+
+      // 正円の作成と追加
+      const circle = new fabric.Circle({
+        left: 200,
+        top: 200,
+        fill: 'red',
+        radius: 50,
+        selectable: false, // 操作不可能に設定
+        stroke: 'black', // 枠線の色を設定
+        strokeWidth: 10, // 枠線の太さを設定
+      });
+      fabricCanvasRef.current.add(circle);
+
+      // テキストボックスの作成と追加
+      const textbox = new fabric.Textbox('Hello, Fabric.js!', {
+        left: 400,
+        top: 300,
+        width: 200,
+        fontSize: 20,
+        fill: 'black',
+        stroke: 'black',
+        strokeWidth: 1,
+        backgroundColor: 'lightgray',
+        borderColor: 'black',
+        editable: false, // 編集不可能に設定
+      });
+      fabricCanvasRef.current.add(textbox);
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code} style={{ backgroundColor: '#fafafa' }}>
-            pages/index.js
-          </code>
-        </p>
-
-        <div className={styles.grid}>
-          <a className={styles.card} href="https://nextjs.org/docs">
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a className={styles.card} href="https://nextjs.org/learn">
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a className={styles.card} href="https://github.com/vercel/next.js/tree/master/examples">
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            className={styles.card}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <img src="vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <button onClick={addShapes}>図形を追加</button>
+      <canvas ref={canvasRef} width="800" height="600" style={{ border: '1px solid black' }} />
     </div>
   );
 };

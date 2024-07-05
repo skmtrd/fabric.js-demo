@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "run-p dev:*",
-    "dev:next": "next dev -p 3000",
+    "dev:next": "next dev -p 3005",
     "dev:hcm": "hcm 'src/**/*.module.css' -w",
     "hcm": "hcm 'src/**/*.module.css'",
     "build": "next build",
@@ -17,6 +17,7 @@
     "typecheck": "npm run hcm && tsc --noEmit"
   },
   "dependencies": {
+    "fabric": "^6.0.1",
     "next": "14.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
